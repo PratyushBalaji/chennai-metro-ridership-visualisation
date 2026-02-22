@@ -110,3 +110,136 @@ def get_station_name_from_code(code):
 def get_station_code_from_name(name):
     return STATION_NAME_TO_CODE.get(name, name)
 
+
+# payment method display names mapping
+PAYMENT_METHOD_DISPLAY_NAMES = {
+    "noOfTotal_QR": "Total QR",
+    "noOfPaperQR": "Paper QR",
+    "noOfONDCQR": "ONDC QR",
+    "noOfWhatsAppQR": "WhatsApp QR",
+    "noOfRapidoQR": "Rapido QR",
+    "noOfPhonePeQR": "PhonePe QR",
+    "noOfPaytmQR": "Paytm QR",
+    "noOfStaticQR": "Static QR",
+    "noOfRedBusQR": "RedBus QR",
+    "noOfMobileQR": "Mobile QR",
+    "noOfCumtaQR": "Cumta QR",
+    "noOfEventQR": "Event QR",
+    "noOfJusPayQR": "JusPay QR",
+    "noOfPromotionalRideQR": "Promotional QR",
+    "noOfMilesKilometersQR": "Miles & Km QR",
+    "noOfUberQR": "Uber ONDC",
+    "noOfNCMCcard": "Singara Chennai Card",
+    "noOfSVP": "Smart Value Pass",
+    "noOfCards": "Store Value Card",
+    "noOfToken": "Token",
+    "noOfTouristCard": "Tourist Card",
+    "noOfTripcard": "Trip Card",
+    "noOfGroupCard": "Group Card",
+}
+
+
+def format_number(num):
+    """Format a number with commas for display."""
+    return f"{int(num):,}"
+
+
+# color scheme for metrics
+COLOR_SCHEME = {
+    "total": "#0066CC",  # blue
+    "closed_loop": "#FF9500",  # orange
+    "singara": "#17A2B8",  # teal/turquoise
+    "qr": "#9C27B0",  # purple
+    "ice": "#8B5A3C",  # brown
+    "electric": "#2ca02c",  # green
+    "hybrid": "#9C27B0",  # purple
+}
+
+
+def get_payment_methods_for_display(agg_data):
+    """
+    Extract all payment methods from aggregated data and return as list of (column_name, display_name, value).
+    Ordered by value (descending). Excludes headliner ONDC, token, and duplicates.
+    """
+    methods = []
+    exclude_columns = ["Date", "Total", "noOfTotal_QR", "noOfONDCQR", "noOfSVC", "noOfToken"]
+    
+    for col in agg_data.columns:
+        if col not in exclude_columns:
+            display_name = PAYMENT_METHOD_DISPLAY_NAMES.get(col, col)
+            value = agg_data[col].values[0]
+            methods.append((col, display_name, int(value)))
+    
+    methods.sort(key=lambda x: x[2], reverse=True)
+    return methods
+
+
+def get_payment_method_color(col_name):
+    """
+    Determine color for a payment method based on its type.
+    QR methods -> purple, Singara/NCMC -> teal, Closed loop cards/passes -> orange, others -> gray
+    """
+    if col_name == "noOfNCMCcard":
+        return COLOR_SCHEME["singara"]
+    elif col_name == "noOfCards":
+        return COLOR_SCHEME["closed_loop"]
+    elif col_name.endswith("QR") or col_name == 'noOfSVP':
+        return COLOR_SCHEME["qr"]
+    else:
+        return "#808080" # grey for unrecognised
+
+# parking vehicle type display names mapping
+PARKING_COLUMN_DISPLAY_NAMES = {
+    "eFourWheeler": "Electric 4-Wheeler",
+    "eTwoWheeler": "Electric 2-Wheeler",
+    "hFourWheeler": "Hybrid 4-Wheeler",
+    "hTwoWheeler": "Hybrid 2-Wheeler",
+    "fourWheeler": "4-Wheeler (ICE)",
+    "twoWheeler": "2-Wheeler (ICE)",
+    "threeWheeler": "3-Wheeler (ICE)",
+    "sixWheeler": "6-Wheeler (ICE)",
+    "eightWheeler": "8-Wheeler (ICE)",
+}
+
+
+def get_parking_methods_for_display(daily_parking):
+    """
+    Extract all vehicle types from daily parking data and return as list of (column_name, display_name, value).
+    Ordered by value (descending). Excludes total. Calculates 3-wheeler as (threeWheeler - fourWheeler).
+    """
+    methods = []
+    exclude_columns = ["Date", "Total Vehicles"]
+    
+    # Calculate 3-wheeler separately
+    three_wheeler_value = int(daily_parking["threeWheeler"].values[0]) - int(daily_parking["fourWheeler"].values[0])
+    
+    for col in daily_parking.columns:
+        if col not in exclude_columns:
+            display_name = PARKING_COLUMN_DISPLAY_NAMES.get(col, col)
+            
+            # Use calculated value for 3-wheeler
+            if col == "threeWheeler":
+                value = three_wheeler_value
+            else:
+                value = int(daily_parking[col].values[0])
+            
+            methods.append((col, display_name, value))
+    
+    # sort by value descending
+    methods.sort(key=lambda x: x[2], reverse=True)
+    return methods
+
+
+def get_parking_method_color(col_name):
+    """
+    Determine color for a vehicle type based on its category.
+    Electric -> green, Hybrid -> purple, ICE -> brown, others -> gray
+    """
+    if col_name in ["eFourWheeler", "eTwoWheeler"]:
+        return COLOR_SCHEME["electric"]
+    elif col_name in ["hFourWheeler", "hTwoWheeler"]:
+        return COLOR_SCHEME["hybrid"]
+    elif col_name in ["fourWheeler", "twoWheeler", "threeWheeler", "sixWheeler", "eightWheeler"]:
+        return COLOR_SCHEME["ice"]
+    else:
+        return "#808080"  # gray for others
