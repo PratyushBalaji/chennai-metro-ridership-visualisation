@@ -8,6 +8,7 @@ from ridership_tracker_api import (
     get_hourly_ridership_on_date,
     get_station_ridership_on_date,
     get_aggregate_parking_on_date,
+    get_hourly_parking_on_date,
     get_station_name_from_code,
     format_number,
     get_payment_methods_for_display,
@@ -327,8 +328,76 @@ with tab_ridership:
             st.warning(f"No daily parking data for {readable_date}.")
 
         st.markdown("---")
-        st.subheader("Hourly Parking (Coming Soon)")
-        st.info("Hourly parking trends will be displayed here.")
+        st.subheader(f"Hourly Parking")
+        st.caption(f"{readable_date}")
+
+        parking_hourly = get_hourly_parking_on_date(selected_date_str).copy()
+
+        if not parking_hourly.empty:
+            parking_hourly["Time_dt"] = pd.to_datetime(
+                parking_hourly["Hour"], format="%H:%M", errors="coerce"
+            )
+            parking_hourly = (
+                parking_hourly.dropna(subset=["Time_dt"])
+                .sort_values("Time_dt")
+                .reset_index(drop=True)
+            )
+
+            vehicle_types = [
+                col
+                for col in parking_hourly.columns
+                if col not in ["Date", "Hour", "Time_dt", "Total Vehicles", "General Parking"]
+            ]
+            
+            vehicle_types_sorted = sorted(
+                vehicle_types,
+                key=lambda x: parking_hourly[x].sum(),
+                reverse=True
+            )
+
+            fig_parking_hourly = go.Figure()
+
+            fig_parking_hourly.add_trace(
+                go.Bar(
+                    x=parking_hourly["Time_dt"],
+                    y=parking_hourly["Total Vehicles"],
+                    name="Total Vehicles",
+                    marker_color="lightgray",
+                    opacity=0.7,
+                    hovertemplate="<b>Total Vehicles</b>: %{y}<extra></extra>",
+                )
+            )
+
+            for vehicle_type in vehicle_types_sorted:
+                fig_parking_hourly.add_trace(
+                    go.Scatter(
+                        x=parking_hourly["Time_dt"],
+                        y=parking_hourly[vehicle_type],
+                        mode="lines",
+                        name=vehicle_type,
+                        hovertemplate=f"<b>{vehicle_type}</b>: %{{y}}<extra></extra>",
+                    )
+                )
+
+            fig_parking_hourly.update_layout(
+                xaxis_title="Time of Day",
+                yaxis_title="Number of Vehicles",
+                xaxis_tickformat="%H:%M",
+                hovermode="x unified",
+                legend=dict(
+                    orientation="h",
+                    yanchor="top",
+                    y=-0.15,
+                    xanchor="center",
+                    x=0.5,
+                ),
+                height=600,
+                margin=dict(t=80, b=120),
+            )
+
+            st.plotly_chart(fig_parking_hourly, use_container_width=True)
+        else:
+            st.warning(f"No hourly parking data for {readable_date}.")
 
         st.markdown("---")
         st.subheader("Station-wise Parking (Coming Soon)")
