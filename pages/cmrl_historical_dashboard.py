@@ -9,6 +9,7 @@ from ridership_tracker_api import (
     get_station_ridership_on_date,
     get_aggregate_parking_on_date,
     get_hourly_parking_on_date,
+    get_station_parking_on_date,
     get_station_name_from_code,
     format_number,
     get_payment_methods_for_display,
@@ -400,8 +401,74 @@ with tab_ridership:
             st.warning(f"No hourly parking data for {readable_date}.")
 
         st.markdown("---")
-        st.subheader("Station-wise Parking (Coming Soon)")
-        st.info("Station-wise parking breakdown will be displayed here.")
+        st.subheader("Station-wise Parking")
+        st.caption(f"{readable_date}")
+
+        station_parking = get_station_parking_on_date(selected_date_str).copy()
+
+        if not station_parking.empty:
+            for line_num, line_name, bar_color in [("01", "Line 01 - Blue", "#1f77b4"), ("02", "Line 02 - Green", "#2ca02c")]:
+                line_data = station_parking[station_parking["Line"].astype(str).str.zfill(2) == line_num].copy()
+
+                if not line_data.empty:
+                    line_data["Station_Name"] = line_data["Station"].apply(get_station_name_from_code)
+                    line_data["Station_Display"] = line_data["Station_Name"] + " (" + line_data["Station"] + ")"
+                    
+                    vehicle_types_station = [
+                        col
+                        for col in line_data.columns
+                        if col not in ["Date", "Line", "Station", "Station_Name", "Station_Display", "Total Vehicles", "General Parking", "Eight Wheleer"]
+                    ]
+                    
+                    # Sort vehicle types by total parking (descending)
+                    vehicle_types_station_sorted = sorted(
+                        vehicle_types_station,
+                        key=lambda x: line_data[x].sum(),
+                        reverse=True
+                    )
+
+                    fig_station_parking = go.Figure()
+
+                    fig_station_parking.add_trace(
+                        go.Bar(
+                            x=line_data["Station_Display"],
+                            y=line_data["Total Vehicles"],
+                            name="Total Vehicles",
+                            marker_color=bar_color,
+                            opacity=0.7,
+                            hovertemplate="Total: %{y}<extra></extra>",
+                        )
+                    )
+
+                    for vehicle_type in vehicle_types_station_sorted:
+                        fig_station_parking.add_trace(
+                            go.Scatter(
+                                x=line_data["Station_Display"],
+                                y=line_data[vehicle_type],
+                                mode="lines",
+                                name=vehicle_type,
+                                hovertemplate=vehicle_type + ": %{y}<extra></extra>",
+                            )
+                        )
+
+                    fig_station_parking.update_layout(
+                        title_text=f"{line_name}",
+                        yaxis_title="Number of Vehicles",
+                        hovermode="x unified",
+                        xaxis=dict(tickangle=30),
+                        legend=dict(
+                            x=1.02,
+                            y=1,
+                            xanchor="left",
+                            yanchor="top",
+                        ),
+                        height=600,
+                        margin=dict(t=90, b=150, r=250),
+                    )
+
+                    st.plotly_chart(fig_station_parking, use_container_width=True)
+        else:
+            st.warning(f"No station-wise parking data for {readable_date}.")
 
     # PHPDT TAB
     with tab_phpdt:
