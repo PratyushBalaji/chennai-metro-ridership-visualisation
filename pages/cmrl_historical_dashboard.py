@@ -7,15 +7,15 @@ from ridership_tracker_api import (
     get_aggregate_ridership_on_date,
     get_hourly_ridership_on_date,
     get_station_ridership_on_date,
-    # get_aggregate_parking_on_date,
-    # get_hourly_parking_on_date,
-    # get_station_parking_on_date,
-    # get_phpdt_ridership_on_date,
+    get_aggregate_parking_on_date,
     get_station_name_from_code,
     format_number,
     get_payment_methods_for_display,
     get_payment_method_color,
+    get_parking_methods_for_display,
+    get_parking_method_color,
     PAYMENT_METHOD_DISPLAY_NAMES,
+    PARKING_COLUMN_DISPLAY_NAMES,
     COLOR_SCHEME,
 )
 
@@ -262,8 +262,69 @@ with tab_ridership:
 
     # PARKING TAB
     with tab_parking:
-        st.subheader("Daily Parking (Coming Soon)")
-        st.info("Daily parking statistics will be displayed here.")
+        # Daily Stats
+        st.subheader(f"Daily Statistics")
+        st.caption(f"{readable_date}")
+        
+        parking_data = get_aggregate_parking_on_date(selected_date_str)
+        
+        if not parking_data.empty:
+            total_vehicles = int(parking_data["Total Vehicles"].values[0])
+            
+            # split by fuel type
+            # Note: threeWheeler is combined 3 & 4-wheelers, so 3-wheeler = threeWheeler - fourWheeler
+            four_wheeler = int(parking_data["fourWheeler"].values[0])
+            three_wheeler = int(parking_data["threeWheeler"].values[0]) - four_wheeler
+            two_wheeler = int(parking_data["twoWheeler"].values[0])
+            six_wheeler = int(parking_data["sixWheeler"].values[0])
+            eight_wheeler = int(parking_data["eightWheeler"].values[0])
+            
+            electric_cols = ["eFourWheeler", "eTwoWheeler"]
+            hybrid_cols = ["hFourWheeler", "hTwoWheeler"]
+            
+            total_ice = three_wheeler + four_wheeler + two_wheeler + six_wheeler + eight_wheeler
+            total_electric = sum([int(parking_data[col].values[0]) for col in electric_cols if col in parking_data.columns])
+            total_hybrid = sum([int(parking_data[col].values[0]) for col in hybrid_cols if col in parking_data.columns])
+            
+            col1, col2, col3, col4 = st.columns(4)
+            
+            total_color = COLOR_SCHEME["total"]
+            ice_color = COLOR_SCHEME["ice"]
+            electric_color = COLOR_SCHEME["electric"]
+            hybrid_color = COLOR_SCHEME["hybrid"]
+            
+            with col1:
+                st.markdown(f"""<p style='color: white; font-size: 1.5em;'>Total Vehicles</p>
+<p style='color: {total_color}; font-size: 2.5em; font-weight: bold;'>{format_number(total_vehicles)}</p>""", unsafe_allow_html=True)
+            
+            with col2:
+                st.markdown(f"""<p style='color: white; font-size: 1.5em;'>Total ICE Vehicles</p>
+<p style='color: {ice_color}; font-size: 2.5em; font-weight: bold;'>{format_number(total_ice)}</p>""", unsafe_allow_html=True)
+            
+            with col3:
+                st.markdown(f"""<p style='color: white; font-size: 1.5em;'>Total Electric</p>
+<p style='color: {electric_color}; font-size: 2.5em; font-weight: bold;'>{format_number(total_electric)}</p>""", unsafe_allow_html=True)
+            
+            with col4:
+                st.markdown(f"""<p style='color: white; font-size: 1.5em;'>Total Hybrid</p>
+<p style='color: {hybrid_color}; font-size: 2.5em; font-weight: bold;'>{format_number(total_hybrid)}</p>""", unsafe_allow_html=True)
+            
+            st.markdown("---")
+            st.subheader("Vehicle Type Breakdown")
+            
+            parking_methods = get_parking_methods_for_display(parking_data)
+            
+            for i in range(0, len(parking_methods), 5):
+                cols = st.columns(5)
+                for j, (col_name, display_name, value) in enumerate(parking_methods[i:i+5]):
+                    with cols[j]:
+                        method_color = get_parking_method_color(col_name)
+                        st.markdown(f"""<div style='text-align: center; padding: 20px 0;'>
+<p style='color: white; font-size: 0.95em; margin: 0 0 8px 0;'>{display_name}</p>
+<p style='color: {method_color}; font-size: 2em; font-weight: bold; margin: 0;'>{format_number(value)}</p>
+</div>""", unsafe_allow_html=True)
+        else:
+            st.warning(f"No daily parking data for {readable_date}.")
 
         st.markdown("---")
         st.subheader("Hourly Parking (Coming Soon)")
