@@ -11,14 +11,17 @@ from ridership_tracker_api import (
     get_aggregate_parking_on_date,
     get_hourly_parking_on_date,
     get_station_parking_on_date,
+    get_phpdt_ridership_on_date,
     get_station_name_from_code,
     format_number,
     get_payment_methods_for_display,
     get_payment_method_color,
     get_parking_methods_for_display,
     get_parking_method_color,
+    get_phpdt_bar_color,
     PAYMENT_METHOD_DISPLAY_NAMES,
     PARKING_COLUMN_DISPLAY_NAMES,
+    PHPDT_LINE_STATIONS,
     COLOR_SCHEME,
 )
 
@@ -43,7 +46,7 @@ if "selected_date" not in st.session_state:
 
 st.title("CMRL Historical Dashboard")
 
-col1, col2, _ = st.columns([1, 1, 2])
+col1, col2, _ = st.columns([1, 1, 4])
 with col1:
     st.subheader("Select Date")
 with col2:
@@ -531,5 +534,173 @@ with tab_ridership:
 
     # PHPDT TAB
     with tab_phpdt:
-        st.subheader("Peak Hour Per Direction Traffic (Coming Soon)")
-        st.info("Corridor-level PHPDT analysis will be displayed here.")
+        st.subheader("Peak Hour Per Direction Traffic (PHPDT)")
+        st.caption(f"{readable_date}")
+
+        display_mode = st.radio(
+            "Display",
+            ["Bars + Lines", "Bars only", "Lines only"],
+            index=0,
+            horizontal=True,
+            help="Switch between bar view, line view, or both for PHPDT",
+        )
+
+        show_bars = display_mode in ["Bars + Lines", "Bars only"]
+        show_lines = display_mode in ["Bars + Lines", "Lines only"]
+        line_showlegend = display_mode == "Lines only"
+
+        phpdt_day = get_phpdt_ridership_on_date(selected_date_str)
+
+        if phpdt_day.empty:
+            st.warning(f"No PHPDT data available for {readable_date}.")
+        else:
+            # Process each line
+            for line_num in [1, 2]:
+                line_phpdt = phpdt_day[phpdt_day["Line"] == line_num].copy()
+
+                if line_phpdt.empty:
+                    continue
+
+                # Separate UP and DOWN directions
+                up_data = line_phpdt[line_phpdt["Direction"] == "UP"].copy()
+                down_data = line_phpdt[line_phpdt["Direction"] == "DOWN"].copy()
+
+                # Get station order for this line
+                station_order = PHPDT_LINE_STATIONS.get(line_num, [])
+                station_names = [get_station_name_from_code(code) for code in station_order]
+                station_display = [f"{name} ({code})" for name, code in zip(station_names, station_order)]
+                line_start_name = station_names[0] if station_names else ""
+                line_end_name = station_names[-1] if station_names else ""
+                line_start_code = station_order[0] if station_order else ""
+                line_end_code = station_order[-1] if station_order else ""
+
+                # Build corridor data - SEPARATE labels for UP and DOWN
+                bar_positions = []  # x position for bars (between stations)
+                up_corridor_values = []
+                down_corridor_values = []
+                up_corridor_labels = []  # UP shows forward direction
+                down_corridor_labels = []  # DOWN shows reverse direction
+
+                for i in range(len(station_order) - 1):
+                    from_station = station_order[i]
+                    to_station = station_order[i + 1]
+
+                    # Bar position is between station i and i+1
+                    bar_pos = i + 0.5
+                    bar_positions.append(bar_pos)
+
+                    # UP corridor: from_station → to_station
+                    up_label = f"{station_names[i]} → {station_names[i + 1]}"
+                    up_row = up_data[(up_data["Start Station"] == from_station) & (up_data["End Station"] == to_station)]
+                    up_val = up_row["PHPDT"].values[0] if not up_row.empty else 0
+                    up_corridor_values.append(up_val)
+                    up_corridor_labels.append(up_label)
+
+                    # DOWN corridor: to_station → from_station (REVERSED!)
+                    down_label = f"{station_names[i + 1]} → {station_names[i]}"  # Reverse for DOWN
+                    down_row = down_data[(down_data["Start Station"] == to_station) & (down_data["End Station"] == from_station)]
+                    down_val = down_row["PHPDT"].values[0] if not down_row.empty else 0
+                    down_corridor_values.append(down_val)
+                    down_corridor_labels.append(down_label)
+
+                # Get peak hours
+                up_peak_hour = f"{up_data['Start Hour'].values[0]}-{up_data['End Hour'].values[0]}" if not up_data.empty else "N/A"
+                down_peak_hour = f"{down_data['Start Hour'].values[0]}-{down_data['End Hour'].values[0]}" if not down_data.empty else "N/A"
+
+                # Create Plotly figure
+                fig_phpdt = go.Figure()
+
+                # Add UP direction bars (positioned between stations)
+                up_legend_name = f"UP ({up_peak_hour}) ({line_start_code}-{line_end_code})"
+                down_legend_name = f"DOWN ({down_peak_hour}) ({line_end_code}-{line_start_code})"
+
+                if show_bars:
+                    fig_phpdt.add_trace(
+                        go.Bar(
+                            x=bar_positions,
+                            y=up_corridor_values,
+                            name=up_legend_name,
+                            marker_color=get_phpdt_bar_color(line_num, "UP"),
+                            hovertemplate="<b>%{customdata}</b><br>UP Passengers: %{y}<br>Peak: " + up_peak_hour + "<extra></extra>",
+                            customdata=up_corridor_labels,
+                            legendgroup="up",
+                            showlegend=True,
+                        )
+                    )
+
+                # Add DOWN direction bars (positioned between stations)
+                if show_bars:
+                    fig_phpdt.add_trace(
+                        go.Bar(
+                            x=bar_positions,
+                            y=down_corridor_values,
+                            name=down_legend_name,
+                            marker_color=get_phpdt_bar_color(line_num, "DOWN"),
+                            hovertemplate="<b>%{customdata}</b><br>DOWN Passengers: %{y}<br>Peak: " + down_peak_hour + "<extra></extra>",
+                            customdata=down_corridor_labels,
+                            legendgroup="down",
+                            showlegend=True,
+                        )
+                    )
+
+                # Smooth lines tracing the bars (no extra legend entries)
+                if show_lines:
+                    fig_phpdt.add_trace(
+                        go.Scatter(
+                            x=bar_positions,
+                            y=up_corridor_values,
+                            mode="lines",
+                            name=up_legend_name,
+                            line=dict(shape="spline", color=get_phpdt_bar_color(line_num, "UP"), width=2),
+                            hovertemplate="<b>%{customdata}</b><br>UP Passengers: %{y}<br>Peak: " + up_peak_hour + "<extra></extra>",
+                            customdata=up_corridor_labels,
+                            showlegend=line_showlegend,
+                            legendgroup="up",
+                        )
+                    )
+
+                if show_lines:
+                    fig_phpdt.add_trace(
+                        go.Scatter(
+                            x=bar_positions,
+                            y=down_corridor_values,
+                            mode="lines",
+                            name=down_legend_name,
+                            line=dict(shape="spline", color=get_phpdt_bar_color(line_num, "DOWN"), width=2),
+                            hovertemplate="<b>%{customdata}</b><br>DOWN Passengers: %{y}<br>Peak: " + down_peak_hour + "<extra></extra>",
+                            customdata=down_corridor_labels,
+                            showlegend=line_showlegend,
+                            legendgroup="down",
+                        )
+                    )
+
+                # Set x-axis to show station names at integer positions
+                station_positions = list(range(len(station_names)))
+                
+                fig_phpdt.update_layout(
+                    title_text=f"Line {line_num} - {'Blue' if line_num == 1 else 'Green'} Line between {line_start_name} and {line_end_name}",
+                    yaxis_title="Peak Hour Passengers",
+                    yaxis=dict(autorange=True, rangemode="tozero"),
+                    barmode="group",
+                    hovermode="x unified",
+                    xaxis=dict(
+                        type="linear",
+                        tickmode="array",
+                        tickvals=station_positions,
+                        ticktext=station_display,
+                        tickangle=30,
+                        zeroline=False,
+                        range=[-0.5, len(station_positions) - 0.5],
+                    ),
+                    legend=dict(
+                        orientation="h",
+                        x=0.5,
+                        xanchor="center",
+                        y=-0.3,
+                        yanchor="top",
+                    ),
+                    height=600,
+                    margin=dict(t=90, b=200, r=40, l=40),
+                )
+
+                st.plotly_chart(fig_phpdt, use_container_width=True)
