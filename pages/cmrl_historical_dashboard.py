@@ -1,4 +1,5 @@
 import pandas as pd
+import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
@@ -23,6 +24,8 @@ from ridership_tracker_api import (
 
 
 st.set_page_config(page_title="CMRL Historical Dashboard", layout="wide")
+
+line_colors = px.colors.qualitative.Bold
 
 hourly_all = DATA_SOURCES["ridership_hourly"].copy()
 hourly_all["Date"] = pd.to_datetime(hourly_all["Date"], errors="coerce")
@@ -94,7 +97,7 @@ with tab_ridership:
 <p style='color: {singara_color}; font-size: 2.5em; font-weight: bold;'>{format_number(singara_card)}</p>""", unsafe_allow_html=True)
         
         with col4:
-            st.markdown(f"""<p style='color: white; font-size: 1.5em;'>Total QR (Total ONDC QR : {format_number(ondc_qr)})</p>
+            st.markdown(f"""<p style='color: white; font-size: 1.5em;'>Total QR (Total ONDC : {format_number(ondc_qr)})</p>
 <p style='color: {qr_color}; font-size: 2.5em; font-weight: bold;'>{format_number(total_qr)}</p>""", unsafe_allow_html=True)
         
         st.markdown("---")
@@ -157,13 +160,27 @@ with tab_ridership:
             )
         )
 
-        for method in payment_methods_sorted:
+        for idx, method in enumerate(payment_methods_sorted):
+            # Black outline
             fig_hourly.add_trace(
                 go.Scatter(
                     x=ridership_day["Time_dt"],
                     y=ridership_day[method],
                     mode="lines",
                     name=method,
+                    line=dict(shape="spline", color="black", width=3.5),
+                    hoverinfo="skip",
+                    showlegend=False,
+                )
+            )
+            # Colored line on top
+            fig_hourly.add_trace(
+                go.Scatter(
+                    x=ridership_day["Time_dt"],
+                    y=ridership_day[method],
+                    mode="lines",
+                    name=method,
+                    line=dict(shape="spline", color=line_colors[idx % len(line_colors)], width=2.5),
                     hovertemplate=f"<b>{method}</b>: %{{y}}<extra></extra>",
                 )
             )
@@ -231,13 +248,27 @@ with tab_ridership:
                     )
                 )
 
-                for method in payment_methods_station_sorted:
+                for idx, method in enumerate(payment_methods_station_sorted):
+                    # Black outline
                     fig_station.add_trace(
                         go.Scatter(
                             x=line_data["Station_Display"],
                             y=line_data[method],
                             mode="lines",
                             name=method,
+                            line=dict(shape="spline", color="black", width=3.5),
+                            hoverinfo="skip",
+                            showlegend=False,
+                        )
+                    )
+                    # Colored line on top
+                    fig_station.add_trace(
+                        go.Scatter(
+                            x=line_data["Station_Display"],
+                            y=line_data[method],
+                            mode="lines",
+                            name=method,
+                            line=dict(shape="spline", color=line_colors[idx % len(line_colors)], width=2.5),
                             hovertemplate=method + ": %{y}<extra></extra>",
                         )
                     )
@@ -369,13 +400,27 @@ with tab_ridership:
                 )
             )
 
-            for vehicle_type in vehicle_types_sorted:
+            for idx, vehicle_type in enumerate(vehicle_types_sorted):
+                # Black outline
                 fig_parking_hourly.add_trace(
                     go.Scatter(
                         x=parking_hourly["Time_dt"],
                         y=parking_hourly[vehicle_type],
                         mode="lines",
                         name=vehicle_type,
+                        line=dict(shape="spline", color="black", width=3.5),
+                        hoverinfo="skip",
+                        showlegend=False,
+                    )
+                )
+                # Colored line on top
+                fig_parking_hourly.add_trace(
+                    go.Scatter(
+                        x=parking_hourly["Time_dt"],
+                        y=parking_hourly[vehicle_type],
+                        mode="lines",
+                        name=vehicle_type,
+                        line=dict(shape="spline", color=line_colors[idx % len(line_colors)], width=2.5),
                         hovertemplate=f"<b>{vehicle_type}</b>: %{{y}}<extra></extra>",
                     )
                 )
@@ -440,13 +485,27 @@ with tab_ridership:
                         )
                     )
 
-                    for vehicle_type in vehicle_types_station_sorted:
+                    for idx, vehicle_type in enumerate(vehicle_types_station_sorted):
+                        # Black outline
                         fig_station_parking.add_trace(
                             go.Scatter(
                                 x=line_data["Station_Display"],
                                 y=line_data[vehicle_type],
                                 mode="lines",
                                 name=vehicle_type,
+                                line=dict(shape="spline", color="black", width=3.5),
+                                hoverinfo="skip",
+                                showlegend=False,
+                            )
+                        )
+                        # Colored line on top
+                        fig_station_parking.add_trace(
+                            go.Scatter(
+                                x=line_data["Station_Display"],
+                                y=line_data[vehicle_type],
+                                mode="lines",
+                                name=vehicle_type,
+                                line=dict(shape="spline", color=line_colors[idx % len(line_colors)], width=2.5),
                                 hovertemplate=vehicle_type + ": %{y}<extra></extra>",
                             )
                         )
