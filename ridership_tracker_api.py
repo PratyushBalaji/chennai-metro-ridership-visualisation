@@ -111,6 +111,29 @@ def get_station_code_from_name(name):
     return STATION_NAME_TO_CODE.get(name, name)
 
 
+# PHPDT station order mapping (from start to end of each line)
+PHPDT_LINE_STATIONS = {
+    1: ["SAP", "SME", "SOT", "SAL", "SGU", "SLM", "SSA", "SCR", "STE", "SGM", "STL", "SLI", "SGE", "SCC", "SHC", "SMA", "SWA", "STC", "STR", "SNW", "STG", "SKP", "STT", "STV", "SWN", "SWD"],
+    2: ["SMM", "SAL", "SSI", "SAN", "SVA", "SAR", "SCM", "SKO", "STI", "SAT", "SAE", "SSN", "SPC", "SKM", "SNP", "SEG", "SCC"],
+}
+
+
+def get_phpdt_bar_color(line_num, direction):
+    """Get color for PHPDT bars based on line and direction."""
+    if line_num == 1:
+        # Line 1: Blue base
+        if direction == "UP":
+            return "#4DA6FF"  # Lighter blue for UP
+        else:  # DOWN
+            return "#003D99"  # Darker blue for DOWN
+    else:  # Line 2
+        # Line 2: Green base
+        if direction == "UP":
+            return "#66d966"  # Lighter green for UP
+        else:  # DOWN
+            return "#0d7f0d"  # Darker green for DOWN
+
+
 # payment method display names mapping
 PAYMENT_METHOD_DISPLAY_NAMES = {
     "noOfTotal_QR": "Total QR",
