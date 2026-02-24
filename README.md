@@ -19,7 +19,7 @@ Planned, existing, and potential visualisations for any given date / date range
 - [x] Daily, Hourly, Stationwise parking (CMRL Dashboard Recreation)
 - [x] Daily PHPDT (CMRL Dashboard Recreation)
 - [ ] Stationwise Ridership heatmap
-- [ ] PHPDT as a heatmap
+- [ ] PHPDT as a heatmap -> folium antpath for up / down and weight for phpdt
 - [ ] Historical ridership at a particular station
 - [ ] Weekday vs Weekend patterns
 - [ ] Commuters vs Casual users patterns (approximated through NCMC vs QR modes)
@@ -47,3 +47,8 @@ Planned, existing, and potential visualisations for any given date / date range
   - Guindy : both transitional and destination station => projected higher ridership as MTC users use new line and deboard at Guindy instead of not interacting w/ metro network at all
   - Projected Effect : distribution of embarking ridership b/w koyambedu and vadapalani as network entry points and cumulative disembarking ridership at guindy. Smaller effect on neighbouring stations
   - consider effect of initial porur-vadapalani express service as opposed to local stops after stage 2
+
+### Miscellaneous
+- [ ] Ridership during special occasions (public holidays, festivals, Bharath Bandh / strikes, events)
+  - February 14/15th A R Rehman concert, CMRL offered event-sponsored QRs for one-time free travel to and from central + extended timings. Ridership on these dates skewed at central, high usage of 'Event QR' payment mode, ridership at odd hours of the day, likely parking impact as well
+  - Chepauk cricket match dayw ridership
