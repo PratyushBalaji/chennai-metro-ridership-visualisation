@@ -41,14 +41,20 @@ Planned, existing, and potential visualisations for any given date / date range
   - 3 main links from poonamallee to city are :
     - Mount Rd to Guindy
     - Bangalore-Chennai Hwy to Koyambedu
-    - Arcot Rd Vadapalani
-  - Vadapalani station sees increased ridership from new line. People are now on the metro network earlier and at a new station. What about Guindy and Koyambedu?
-  - Koyambedu : largely transitional station => projected lower ridership as people board at vadapalani instead to get on network and bypass fare gates at Koyambedu
-  - Guindy : both transitional and destination station => projected higher ridership as MTC users use new line and deboard at Guindy instead of not interacting w/ metro network at all
+    - Arcot Rd to Vadapalani
+  - Vadapalani station sees increased ridership from new line. People are now on the metro network earlier and at a new station. Existing Arcot rd bus users switch to metro for speed => transfer station which may not reflect in ridership stats but will in PHPDT on yellow & green lines. What about Guindy and Koyambedu?
+  - Koyambedu : largely transitional station => projected lower ridership as people board/transfer at vadapalani instead to get on network and bypass fare gates at Koyambedu
+  - Guindy : both transitional and destination station => projected higher ridership as MTC users use new line and deboard at Guindy instead of not interacting w/ metro network at all. 
   - Projected Effect : distribution of embarking ridership b/w koyambedu and vadapalani as network entry points and cumulative disembarking ridership at guindy. Smaller effect on neighbouring stations
   - consider effect of initial porur-vadapalani express service as opposed to local stops after stage 2
+- [ ] Effect of **Velachery - St Thomas Mount suburban extension** on St Thomas Mount and green line ridership
+  - 5km extension that adds another metro-mrts interchange
+  - Expected operationalisation on around 10 March 2026 (slight delays from CMRS clearance)
+  - New direct beach route via mrts from St Thomas Mount via Velachery
+  - In far future gauge impact of yellow line phase 2 to lighthouse which acts as alternative direct bypass to beach
 
 ### Miscellaneous
 - [ ] Ridership during special occasions (public holidays, festivals, Bharath Bandh / strikes, events)
   - February 14/15th A R Rehman concert, CMRL offered event-sponsored QRs for one-time free travel to and from central + extended timings. Ridership on these dates skewed at central, high usage of 'Event QR' payment mode, ridership at odd hours of the day, likely parking impact as well
-  - Chepauk cricket match dayw ridership
+  - March 7th Hiphop Tamizha concert, event-sponsored QRs for one-time round trip at nandanam station + extended timings at central for transfers
+  - Chepauk cricket match day ridership
