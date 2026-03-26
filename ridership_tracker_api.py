@@ -25,6 +25,51 @@ DATA_SOURCES = {
     "phpdt_daily": pd.read_csv(BASE_URL + PHPDT_DAILY_REL_PATH),
 }
 
+# station coordinates for heatmaps
+STATION_COORDINATES = {
+    "SGM": (13.0446755, 80.2479706),
+    "SAL": (13.004202, 80.201471),
+    "SAE": (13.0846, 80.2194),
+    "SAT": (13.085041, 80.208728),
+    "SAR": (13.0622222222222, 80.2116666666667),
+    "SAN": (13.035483, 80.211329),
+    "SCM": (13.0685, 80.2041),
+    "SCC": (13.081464, 80.272752),
+    "SAP": (12.980806, 80.164197),
+    "SEG": (13.079055, 80.261105),
+    "SSI": (13.017128, 80.205302),
+    "SGE": (13.0695762, 80.2722682),
+    "SGU": (13.009262, 80.213189),
+    "SHC": (13.0873489, 80.2850209),
+    "SKP": (13.1509, 80.2994),
+    "SKM": (13.077536, 80.242866),
+    "SKO": (13.0736, 80.1948),
+    "SLI": (13.0645067, 80.2658909),
+    "SLM": (13.0147843, 80.2229016),
+    "SWD": (13.18341, 80.30854),
+    "SWN": (13.17913, 80.30719),
+    "SMA": (13.0949266, 80.2854243),
+    "SME": (12.987664, 80.176459),
+    "SCR": (13.0315608, 80.240694),
+    "SOT": (12.999843, 80.193975),
+    "SNP": (13.0787905, 80.2500871),
+    "SNW": (13.1343, 80.2929),
+    "SPC": (13.0755, 80.2329),
+    "SSA": (13.0214141, 80.2254362),
+    "SSN": (13.078799, 80.225093),
+    "STC": (13.1158, 80.2847),
+    "SMM": (12.9947222222222, 80.1988888888889),
+    "STE": (13.0371999, 80.2457002),
+    "STI": (13.085479, 80.200981),
+    "STL": (13.0581433, 80.2571455),
+    "STT": (13.1598132, 80.3022763),
+    "STV": (13.1718, 80.3052),
+    "STG": (13.1432, 80.2963),
+    "STR": (13.1244, 80.2888),
+    "SVA": (13.0505, 80.21208),
+    "SWA": (13.1077, 80.2806),
+}
+
 # basic getters : csv data by date
 def get_aggregate_ridership_on_date(date_str):
     return DATA_SOURCES["ridership_daily"][DATA_SOURCES["ridership_daily"]["Date"] == date_str]
@@ -109,6 +154,78 @@ def get_station_name_from_code(code):
 
 def get_station_code_from_name(name):
     return STATION_NAME_TO_CODE.get(name, name)
+
+
+def get_all_station_coordinates():
+    return STATION_COORDINATES
+
+def get_station_coordinates(station_code):
+    return STATION_COORDINATES.get(station_code, None)
+
+
+def get_station_heatmap_data(date_str):
+    station_data = get_station_ridership_on_date(date_str)
+    if station_data.empty:
+        return [], 1, {}
+    grouped = station_data.groupby("Station")["Total"].sum().reset_index()
+    totals = {}
+    coords = []
+    for _, row in grouped.iterrows():
+        station_code = row["Station"]
+        total = float(row["Total"])
+        coord = get_station_coordinates(station_code)
+        if coord:
+            totals[station_code] = total
+            coords.append([coord[0], coord[1], total])
+    if not coords:
+        return [], 1, {}
+    values = [c[2] for c in coords]
+    max_val = max(values)
+    return coords, max_val, totals
+
+
+def get_station_ridership_date_range():
+    dates = pd.to_datetime(DATA_SOURCES["ridership_station"]["Date"], errors="coerce").dropna()
+    if dates.empty:
+        return None, None
+    return dates.min().date(), dates.max().date()
+
+
+def get_station_ridership_dates():
+    dates = pd.to_datetime(DATA_SOURCES["ridership_station"]["Date"], errors="coerce").dropna()
+    if dates.empty:
+        return []
+    return sorted(dates.dt.date.unique())
+
+
+def get_station_options():
+    return sorted([(name, code) for code, name in STATION_CODE_TO_NAME.items()], key=lambda x: x[0])
+
+
+def get_station_fare_modes():
+    cols = list(DATA_SOURCES["ridership_station"].columns)
+    modes = []
+    if "Total" in cols:
+        modes.append(("Total", "Total"))
+    for col in cols:
+        if col in ["Date", "Station", "Total"]:
+            continue
+        display = PAYMENT_METHOD_DISPLAY_NAMES.get(col, col)
+        modes.append((col, display))
+    return modes
+
+
+def get_station_ridership_between(start_date, end_date, station_code):
+    df = DATA_SOURCES["ridership_station"].copy()
+    df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+    if df["Date"].isna().all():
+        return pd.DataFrame()
+    mask = (
+        (df["Date"] >= pd.to_datetime(start_date))
+        & (df["Date"] <= pd.to_datetime(end_date))
+        & (df["Station"] == station_code)
+    )
+    return df.loc[mask].sort_values("Date")
 
 
 # PHPDT station order mapping (from start to end of each line)
