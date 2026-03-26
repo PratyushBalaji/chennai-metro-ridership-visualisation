@@ -1,8 +1,9 @@
-pandas
-plotly
-streamlit
-folium
-streamlit-folium
+# exact local versions frozen so graphs work on streamlit deployment
+pandas==2.3.3
+plotly==6.5.2
+streamlit==1.54.0
+folium==0.20.0
+streamlit-folium==0.26.1
 
 # streamlit deployment exclusives
 altair<5
