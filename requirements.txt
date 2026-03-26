@@ -3,3 +3,4 @@ plotly
 streamlit
 folium
 streamlit-folium
+altair<5
