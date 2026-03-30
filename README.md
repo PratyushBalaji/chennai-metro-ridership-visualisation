@@ -1,5 +1,16 @@
 # Ridership Visualisation (WIP)
 
+## This page is now live!
+This project is now live on streamlit and linked to this repository, so changes here will reflect in real-time. The API directly fetches the most up-to-date information from the ridership archive project, without any manual intervention. Although it barely scratches the surface of everything I want to put up, this work-in-progress deployment currently serves as a proof of concept. Any and all suggestions / issues / discussions / contributions are welcome!
+
+Although streamlit is an extremely rudimentary way of demonstrating the sheer amount of inferences we can make from commuter data, it is merely a stepping stone in the grand scheme of this project. The goal isn't for people to flock to my website, but for people to get inspired by or educated about the use of publicly available data! 
+
+If simple markdown rendering of plotly graphs can show so much, imagine the potential!
+
+This project is for the commuter, the train-nerd, the urban planner, the [Everyman](https://en.wikipedia.org/wiki/Everyman).
+
+[chennai-metro.streamlit.app](https://chennai-metro.streamlit.app)
+
 ## Info
 - Streamlit webapp
 - main page will have historical cmrl dashboard (Exact dashboards from cmrl website for Ridership, Parking, PHPDT with slider to go through historical dates)
@@ -11,6 +22,15 @@ Essentially serves as a demo for what you can do with the data I am archiving in
 
 https://github.com/PratyushBalaji/chennai-metro-ridership-tracker - sister repository / data source
 
+## Why does this project exist?
+This table speaks for itself :
+
+| Cities with Operational Metro Systems | Cities with Public Metro Ridership Statistics | Cities with Historical Ridership Statistics |
+| - | - | - |
+| Agra <br>Ahmedabad <br>Bengaluru <br>Bhopal <br>Chennai <br>Delhi <br>Gurgaon <br>Hyderabad <br>Indore <br>Jaipur <br>Kanpur <br>Kochi <br>Kolkata <br>Lucknow <br>Meerut <br>Mumbai <br>Nagpur <br>Navi Mumbai <br>Noida <br>Patna <br>Pune <br>Surat | Bengaluru (though inconsistent) <br> Chennai | |
+
+This table will be updated through the project's lifespan. If it no longer justifies this project's existence, either the goal was met, or every metro system in India is no longer operational. Hopefully its the former :)
+
 ## Visualisations
 Planned, existing, and potential visualisations for any given date / date range
 
@@ -18,9 +38,9 @@ Planned, existing, and potential visualisations for any given date / date range
 - [x] Daily, Hourly, Stationwise ridership (CMRL Dashboard Recreation)
 - [x] Daily, Hourly, Stationwise parking (CMRL Dashboard Recreation)
 - [x] Daily PHPDT (CMRL Dashboard Recreation)
-- [ ] Stationwise Ridership heatmap
+- [x] Stationwise Ridership heatmap
 - [ ] PHPDT as a heatmap -> folium antpath for up / down and weight for phpdt
-- [ ] Historical ridership at a particular station
+- [x] Historical ridership at a particular station
 - [ ] Weekday vs Weekend patterns
 - [ ] Commuters vs Casual users patterns (approximated through NCMC vs QR modes)
 - [ ] Weather vs ridership (extreme heat or rainfall)
@@ -34,7 +54,7 @@ Planned, existing, and potential visualisations for any given date / date range
 ### Case studies
 - [ ] Effect of **Egmore railway station redevelopment** on Egmore and other metro stations along affected routes
   - redevelopment from February 22nd to April 5th 2026, analyse ridership at metro stations 2 weeks before and after
-  - reduced MRTS schedules (204 trains to 160 trains daily) lead to increased metro ridership (As reported by news articles)
+  - reduced schedules (204 trains to 160 trains daily) lead to increased metro ridership (As reported by news articles)
   - account for vadapalani line opening -> increased ridership in the middle of the analysis period
 - [ ] Effect of **Poonamallee-Porur-Vadapalani reach operationalisation** on ridership at various metro stations
   - expected opening early march
@@ -49,7 +69,7 @@ Planned, existing, and potential visualisations for any given date / date range
   - consider effect of initial porur-vadapalani express service as opposed to local stops after stage 2
 - [ ] Effect of **Velachery - St Thomas Mount suburban extension** on St Thomas Mount and green line ridership
   - 5km extension that adds another metro-mrts interchange
-  - Expected operationalisation on around 10 March 2026 (slight delays from CMRS clearance)
+  - Operationalised on 14 March 2026
   - New direct beach route via mrts from St Thomas Mount via Velachery
   - In far future gauge impact of yellow line phase 2 to lighthouse which acts as alternative direct bypass to beach
 
