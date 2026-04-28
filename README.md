@@ -78,3 +78,4 @@ Planned, existing, and potential visualisations for any given date / date range
   - February 14/15th A R Rehman concert, CMRL offered event-sponsored QRs for one-time free travel to and from central + extended timings. Ridership on these dates skewed at central, high usage of 'Event QR' payment mode, ridership at odd hours of the day, likely parking impact as well
   - March 7th Hiphop Tamizha concert, event-sponsored QRs for one-time round trip at nandanam station + extended timings at central for transfers
   - Chepauk cricket match day ridership
+- [ ] CMRL smart card usage over the years since NCMC introduction (deprecation), usage drop after cancellation announcement, usage after May 1 (obsoletion)
