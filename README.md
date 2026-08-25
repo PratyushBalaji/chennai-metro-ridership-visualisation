@@ -50,6 +50,7 @@ Planned, existing, and potential visualisations for any given date / date range
 - [ ] ONDC usage vs multimodality
   - Multimodal stations like Central have more first/last mile connectivity options so likely have lower relative ONDC usage
   - Non-multimodal stations have more need for end-to-end transport using Uber, Rapido, etc so likely have higher relative ONDC usage
+- [ ] PHPDT vs Same Hour Parking Flow to analyse commute patterns
 
 ### Case studies
 - [ ] Effect of **Egmore railway station redevelopment** on Egmore and other metro stations along affected routes
