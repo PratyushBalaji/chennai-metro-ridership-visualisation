@@ -99,26 +99,6 @@ summary:focus-visible {
   letter-spacing: 2.1px;
   margin-top: 5px;
 }
-.brand-mark {
-  width: 35px;
-  height: 37px;
-  position: relative;
-  display: block;
-}
-.brand-mark i {
-  position: absolute;
-  width: 9px;
-  height: 32px;
-  background: #69b7ff;
-  left: 7px;
-  border-radius: 3px;
-  transform: rotate(25deg);
-}
-.brand-mark i + i {
-  left: 21px;
-  background: #5dd7c3;
-  transform: rotate(-25deg);
-}
 nav {
   display: flex;
   gap: 8px;
@@ -470,10 +450,9 @@ th:first-child {
 }
 .hero {
   display: grid;
-  grid-template-columns: 1.12fr 1fr;
-  gap: 75px;
+  grid-template-columns: minmax(0, 760px);
   align-items: center;
-  min-height: 510px;
+  min-height: 470px;
   padding: 36px 0 65px;
 }
 .hero h1 {
@@ -520,49 +499,6 @@ th:first-child {
 .secondary-link {
   color: #b9c7d9;
   font-size: 12px;
-}
-.hero-art {
-  border: 1px solid #2c3a4b;
-  border-radius: 12px;
-  position: relative;
-  overflow: hidden;
-  padding: 30px;
-  background: linear-gradient(145deg, #1a2939, #101923);
-  min-height: 330px;
-}
-.art-label {
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: #90afcd;
-}
-.abstract-chart {
-  height: 165px;
-  display: flex;
-  align-items: end;
-  gap: 5px;
-  margin-top: 35px;
-}
-.abstract-chart > span {
-  flex: 1;
-  border-radius: 2px 2px 0 0;
-  opacity: 0.75;
-}
-.art-baseline {
-  display: flex;
-  justify-content: space-between;
-  border-top: 1px solid #436079;
-  margin-top: 8px;
-  padding-top: 13px;
-  color: #799ab6;
-  letter-spacing: 1.5px;
-  font-size: 8px;
-}
-.hero-art p {
-  font-family: Manrope, system-ui, sans-serif;
-  font-size: 19px;
-  letter-spacing: -0.5px;
-  color: #c7dcec;
-  margin: 25px 0 0;
 }
 .home-cards {
   display: grid;
@@ -692,9 +628,6 @@ footer small {
   .brand small {
     font-size: 7px;
   }
-  .brand-mark {
-    transform: scale(0.8);
-  }
   main {
     padding-top: 25px;
   }
@@ -702,8 +635,6 @@ footer small {
     font-size: 26px;
   }
   .hero {
-    grid-template-columns: 1fr;
-    gap: 35px;
     padding-top: 12px;
   }
   .hero h1 {
@@ -711,12 +642,6 @@ footer small {
   }
   .hero-description {
     font-size: 14px;
-  }
-  .hero-art {
-    min-height: 260px;
-  }
-  .abstract-chart {
-    height: 125px;
   }
   .home-cards {
     grid-template-columns: 1fr;

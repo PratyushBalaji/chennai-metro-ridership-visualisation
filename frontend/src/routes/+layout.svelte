@@ -44,11 +44,7 @@
 <a class="skip" href="#content">Skip to content</a>
 <div class="site">
   <header class="site-header">
-    <a class="brand" href="/"
-      ><span class="brand-mark" aria-hidden="true"><i></i><i></i></span><span
-        >CHENNAI METRO<small>RIDERSHIP ARCHIVE</small></span
-      ></a
-    >
+    <a class="brand" href="/"><span>CHENNAI METRO<small>RIDERSHIP ARCHIVE</small></span></a>
     <nav aria-label="Main navigation">
       <a class:active={page.url.pathname === '/'} href="/">About</a><a
         class:active={page.url.pathname === '/dashboard'}

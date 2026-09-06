@@ -18,18 +18,6 @@
       >
     </div>
   </div>
-  <div class="hero-art" aria-hidden="true">
-    <div class="orb"></div>
-    <div class="art-label">CHENNAI / DAILY OBSERVATIONS</div>
-    <div class="abstract-chart">
-      {#each [28, 35, 24, 48, 59, 45, 67, 81, 72, 51, 68, 91, 78, 65, 85, 96, 73, 53, 66, 44, 32, 39, 22, 17] as h, i}<span
-          style:height={h + '%'}
-          style:background={i > 11 ? '#5dd7c3' : '#69b7ff'}
-        ></span>{/each}
-    </div>
-    <div class="art-baseline"><span>THE CITY IN NUMBERS</span><span>01 — 02</span></div>
-    <p>Patterns worth looking at.</p>
-  </div>
 </section>
 <div class="home-cards">
   <a class="panel home-card" href="/dashboard"
