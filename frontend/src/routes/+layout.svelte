@@ -46,10 +46,10 @@
   <header class="site-header">
     <a class="brand" href="/"><span>CHENNAI METRO<small>RIDERSHIP ARCHIVE</small></span></a>
     <nav aria-label="Main navigation">
-      <a class:active={page.url.pathname === '/'} href="/">About</a><a
-        class:active={page.url.pathname === '/dashboard'}
-        href="/dashboard">Dashboard</a
-      ><a class:active={page.url.pathname.startsWith('/explore')} href="/explore/map">Explore</a>
+      <a class:active={page.url.pathname === '/dashboard'} href="/dashboard">Dashboard</a><a
+        class:active={page.url.pathname.startsWith('/explore')}
+        href="/explore/map">Explore</a
+      ><a class:active={page.url.pathname === '/about'} href="/about">About &amp; sources</a>
     </nav>
     <span class="build-label"><span></span>Work in progress</span>
   </header>
