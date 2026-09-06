@@ -153,7 +153,13 @@
     <h1>Historical dashboard</h1>
     <p class="muted">Ridership, parking and peak-hour traffic across Chennai Metro.</p>
   </div>
-  <span class="badge">CMRL archive</span>
+  <a
+    class="badge"
+    href="https://github.com/PratyushBalaji/chennai-metro-ridership-tracker"
+    target="_blank"
+    rel="noreferrer"
+    aria-label="Open the Chennai Metro ridership data repository">CMRL archive ↗</a
+  >
 </div>
 <div class="toolbar">
   <div class="tabs" aria-label="Dataset">

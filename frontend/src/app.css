@@ -218,6 +218,11 @@ p {
   color: #aabed1;
   white-space: nowrap;
 }
+.badge[href]:hover {
+  border-color: #69b7ff;
+  color: #dceeff;
+  background: #172333;
+}
 .toolbar {
   display: flex;
   justify-content: space-between;
