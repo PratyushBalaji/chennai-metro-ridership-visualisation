@@ -12,13 +12,13 @@ export type Archive = Record<Dataset, Row[]>;
 export const source =
   'https://raw.githubusercontent.com/PratyushBalaji/chennai-metro-ridership-tracker/main/';
 export const files: Record<Dataset, string> = {
-  ridership_daily: 'Ridership/ChennaiMetro_Daily_Ridership.csv',
-  ridership_hourly: 'Ridership/ChennaiMetro_Hourly_Ridership.csv',
-  ridership_station: 'Ridership/ChennaiMetro_Station_Ridership.csv',
-  parking_daily: 'Parking/ChennaiMetro_Daily_Parking.csv',
-  parking_hourly: 'Parking/ChennaiMetro_Hourly_Parking.csv',
-  parking_station: 'Parking/ChennaiMetro_Station_Parking.csv',
-  phpdt: 'PHPDT/ChennaiMetro_Daily_PHPDT.csv',
+  ridership_daily: 'data/ridership/ChennaiMetro_Daily_Ridership.csv',
+  ridership_hourly: 'data/ridership/ChennaiMetro_Hourly_Ridership.csv',
+  ridership_station: 'data/ridership/ChennaiMetro_Station_Ridership.csv',
+  parking_daily: 'data/parking/ChennaiMetro_Daily_Parking.csv',
+  parking_hourly: 'data/parking/ChennaiMetro_Hourly_Parking.csv',
+  parking_station: 'data/parking/ChennaiMetro_Station_Parking.csv',
+  phpdt: 'data/phpdt/ChennaiMetro_Daily_PHPDT.csv',
 };
 const dimensions = new Set([
   'Date',

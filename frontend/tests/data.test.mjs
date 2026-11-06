@@ -1,6 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parseCSV, latest, number, sum, byStation, stationHistory } from '../src/lib/data.ts';
+import { parseCSV, latest, number, sum, byStation, stationHistory, files } from '../src/lib/data.ts';
+
+test('archive URLs use the reorganized data directories', () => {
+  assert.equal(Object.keys(files).length, 7);
+  assert.ok(Object.values(files).every((path) => /^data\/(ridership|parking|phpdt)\/ChennaiMetro_.*\.csv$/.test(path)));
+});
 
 test('CSV preserves official codes, quoted labels, missing values and zero', () => {
   const [row] = parseCSV('Date,Line,Station,Total,"Fare, mode",Missing\n2026-09-05,01,SCC,0,12,\n');

@@ -2,13 +2,13 @@ import { mkdir, writeFile } from 'node:fs/promises';
 const base =
   'https://raw.githubusercontent.com/PratyushBalaji/chennai-metro-ridership-tracker/main/';
 const paths = [
-  'Ridership/ChennaiMetro_Daily_Ridership.csv',
-  'Ridership/ChennaiMetro_Hourly_Ridership.csv',
-  'Ridership/ChennaiMetro_Station_Ridership.csv',
-  'Parking/ChennaiMetro_Daily_Parking.csv',
-  'Parking/ChennaiMetro_Hourly_Parking.csv',
-  'Parking/ChennaiMetro_Station_Parking.csv',
-  'PHPDT/ChennaiMetro_Daily_PHPDT.csv',
+  'data/ridership/ChennaiMetro_Daily_Ridership.csv',
+  'data/ridership/ChennaiMetro_Hourly_Ridership.csv',
+  'data/ridership/ChennaiMetro_Station_Ridership.csv',
+  'data/parking/ChennaiMetro_Daily_Parking.csv',
+  'data/parking/ChennaiMetro_Hourly_Parking.csv',
+  'data/parking/ChennaiMetro_Station_Parking.csv',
+  'data/phpdt/ChennaiMetro_Daily_PHPDT.csv',
 ];
 await mkdir('static/data', { recursive: true });
 for (const path of paths) {
