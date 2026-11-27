@@ -4,15 +4,15 @@ import pandas as pd
 BASE_URL = "https://raw.githubusercontent.com/PratyushBalaji/chennai-metro-ridership-tracker/refs/heads/main/"
 
 # relative paths to raw url
-RIDERSHIP_DAILY_REL_PATH = "Ridership/ChennaiMetro_Daily_Ridership.csv"
-RIDERSHIP_HOURLY_REL_PATH = "Ridership/ChennaiMetro_Hourly_Ridership.csv"
-RIDERSHIP_STATION_REL_PATH = "Ridership/ChennaiMetro_Station_Ridership.csv"
+RIDERSHIP_DAILY_REL_PATH = "data/ridership/ChennaiMetro_Daily_Ridership.csv"
+RIDERSHIP_HOURLY_REL_PATH = "data/ridership/ChennaiMetro_Hourly_Ridership.csv"
+RIDERSHIP_STATION_REL_PATH = "data/ridership/ChennaiMetro_Station_Ridership.csv"
 
-PARKING_DAILY_REL_PATH = "Parking/ChennaiMetro_Daily_Parking.csv"
-PARKING_HOURLY_REL_PATH = "Parking/ChennaiMetro_Hourly_Parking.csv"
-PARKING_STATION_REL_PATH = "Parking/ChennaiMetro_Station_Parking.csv"
+PARKING_DAILY_REL_PATH = "data/parking/ChennaiMetro_Daily_Parking.csv"
+PARKING_HOURLY_REL_PATH = "data/parking/ChennaiMetro_Hourly_Parking.csv"
+PARKING_STATION_REL_PATH = "data/parking/ChennaiMetro_Station_Parking.csv"
 
-PHPDT_DAILY_REL_PATH = "PHPDT/ChennaiMetro_Daily_PHPDT.csv"
+PHPDT_DAILY_REL_PATH = "data/phpdt/ChennaiMetro_Daily_PHPDT.csv"
 
 # data source dict (map category to loaded data)
 DATA_SOURCES = {
